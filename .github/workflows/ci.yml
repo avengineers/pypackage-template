@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # Tests for the template
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.11"
+        os:
+          - ubuntu-latest
+          # - windows-latest
+          - macOS-latest
+    runs-on: ${{ matrix.os }}
+    name: "Template: ${{ matrix.python-version }} - ${{ matrix.os }}"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: snok/install-poetry@v1.3.3
+      - name: Install Dependencies
+        run: poetry install
+        shell: bash
+      - name: Test with Pytest
+        run: poetry run pytest
+        shell: bash
+
+  # Generate package, run test, run linting and build docs
+  copier:
+    strategy:
+      fail-fast: false
+      matrix:
+        script:
+          - run: "poetry run pytest"
+            dir: ""
+            name: "pytest"
+          - run: "git init . && pipx run pre-commit run -a"
+            dir: ""
+            name: "pre-commit"
+          - run: "poetry run make html"
+            dir: "docs"
+            name: "docs"
+    runs-on: ubuntu-latest
+    name: "Generated: ${{ matrix.script.name }}"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "10"
+      - uses: snok/install-poetry@v1
+      - run: poetry install
+      - run: poetry run copier . my-project --data 'full_name=Bruno Alla' --data 'email=test@example.com' --data 'github_username=dummy' --data 'project_name=My Amazing Project' --data 'project_short_description=Just a great project' --defaults
+        shell: bash
+      - run: cat pyproject.toml
+        working-directory: my-project
+        shell: bash
+      - run: poetry install --with docs
+        working-directory: my-project
+        shell: bash
+      - run: ${{ matrix.script.run }}
+        working-directory: my-project/${{ matrix.script.dir }}
+        shell: bash

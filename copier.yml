@@ -1,0 +1,61 @@
+# questions
+full_name:
+  type: str
+  help: "What's your name?"
+
+email:
+  type: str
+  help: "Email address"
+  placeholder: "first.last@example.com"
+
+github_username:
+  type: str
+  help: "GitHub Username"
+
+project_name:
+  type: str
+  help: "Project Name (human readable version)"
+  placeholder: "Python Package"
+
+project_slug:
+  type: str
+  help: "Project slug (used for GitHub, PyPI, etc.)"
+  default: "{{ project_name.lower().replace(' ', '-') }}"
+
+package_name:
+  type: str
+  help: "The name of the main Python package (should be a valid Python identifier)"
+  default: "{{ project_slug.replace('-', '_') }}"
+
+project_short_description:
+  type: str
+  help: "A short description of the project"
+  placeholder: "A super helpful small Python package."
+
+open_source_license:
+  type: str
+  help: "The open source license to use"
+  choices:
+    - "MIT"
+    - "Apache Software License 2.0"
+    - "GNU General Public License v3"
+    - "Not open source"
+
+copyright_year:
+  type: str
+  help: "Copyright year(s)"
+  default: "2024"
+
+documentation:
+  type: bool
+  help: "Generate documentation?"
+  default: yes
+
+# Copier metadata
+_min_copier_version: "9.0.0"
+_subdirectory: "project"
+_tasks:
+  # Remove license file if no license
+  - "{% if open_source_license == 'Not open source' %}rm LICENSE{% endif %}"
+  # Cleanup docs
+  - "{% if not documentation %}rm -rf docs .readthedocs.yml{% endif %}"
