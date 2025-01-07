@@ -51,6 +51,11 @@ documentation:
   help: "Generate documentation?"
   default: yes
 
+main_branch:
+  type: str
+  help: "Branch name to use for the main development branch"
+  default: "main"
+
 # Copier metadata
 _min_copier_version: "9.0.0"
 _subdirectory: "project"

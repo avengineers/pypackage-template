@@ -1,7 +1,18 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
+
+# bootstrap files are downloaded during installation
+/.bootstrap
+
+# unnecessary docs files
+docs/_images/piechart-*.svg
+
+# Generated IDEA project files
+.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
+/.pytest_cache
 *.py[cod]
 *$py.class
 
@@ -140,6 +151,3 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-
-# Bootstrap files
-.bootstrap

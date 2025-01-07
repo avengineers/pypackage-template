@@ -1,8 +1,8 @@
 # {{ project_name }}
 
 <p align="center">
-  <a href="https://github.com/{{ github_username }}/{{ project_slug }}/actions/workflows/ci.yml?query=branch%3Amain">
-    <img src="https://img.shields.io/github/actions/workflow/status/{{ github_username }}/{{ project_slug }}/ci.yml?branch=main&label=CI&logo=github&style=flat-square" alt="CI Status" >
+  <a href="https://github.com/{{ github_username }}/{{ project_slug }}/actions/workflows/ci.yml?query=branch%3A{{ main_branch }}">
+    <img src="https://img.shields.io/github/actions/workflow/status/{{ github_username }}/{{ project_slug }}/ci.yml?branch={{ main_branch }}&label=CI&logo=github&style=flat-square" alt="CI Status" >
   </a>
   {%- if documentation %}
   <a href="https://{{ project_slug }}.readthedocs.io">
@@ -43,13 +43,15 @@ Install this via pip (or your favourite package manager):
 ## Start developing
 
 The project uses Poetry for dependencies management and packaging.
-Run the `bootstrap.ps1` script to install Python and create the virtual environment.
+Run the `bootstrap.ps1` script to install Python and create the virtual environment. (This is only working on windows machines!)
 
 ```powershell
 .\bootstrap.ps1
 ```
 
 This will also generate a `poetry.lock` file, you should track this file in version control.
+
+If you want to customize the bootstrapping process please create a bootstrap.json file according to the [bootstrap documentation](https://github.com/avengineers/bootstrap?tab=readme-ov-file#configuration).
 
 To execute the test suite, call pytest inside Poetry's virtual environment via `poetry run`:
 
@@ -72,6 +74,11 @@ See the `.vscode/tasks.json` for more details.
 ## Committing changes
 
 This repository uses [commitlint](https://github.com/conventional-changelog/commitlint) for checking if the commit message meets the [conventional commit format](https://www.conventionalcommits.org/en).
+
+## Release
+
+This repository uses [semantic release](https://python-semantic-release.readthedocs.io/en/latest/) to automate versioning the Python projects.
+The package version will be automatically updated when the `{{ main_branch }}` branch is built.
 
 ## Contributors ✨
 

@@ -2,10 +2,9 @@ name: Sync Github labels
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - ".github/**"
+    branches: [{{ main_branch }}]
+    paths: [".github/**"]
+{% raw %}
 
 jobs:
   labels:
@@ -20,3 +19,4 @@ jobs:
         run: pip install labels
       - name: Sync config with Github
         run: labels -u ${{ github.repository_owner }} -t ${{ secrets.GITHUB_TOKEN }} sync -f .github/labels.toml
+{% endraw %}
